@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "Tracking_app",
+    "slug": "tracking",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyBLpsyN_qxvomD1BxYp5_7C7aWcvi9DjP0"
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff",
+        "config": {
+          "googleMapsApiKey": "AIzaSyBLpsyN_qxvomD1BxYp5_7C7aWcvi9DjP0"
+        }
+      },
+      "package": "com.adham_mohamed.tracking"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+
+
+    "extra": {
+      "eas": {
+        "projectId": "33968461-6183-4976-a65d-aeb83f77cde6"
+      }
+    },
+    "owner": "adham_mohamed"
+
+    
+  }
+}
