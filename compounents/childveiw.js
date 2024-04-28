@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
+import axios from 'axios';
 import * as Location from "expo-location";
 
 const LOCATION_DISTANCE_THRESHOLD = 10; // METERS
@@ -9,6 +10,7 @@ const ChildView = () => {
   const [errMsg, setErrMsg] = useState("");
   const [userLat, setUserLat] = useState("");
   const [userLong, setUserLong] = useState("");
+  const [data, setData] = useState(null);
 
   useEffect(() => {
     const getLocation = async () => {
@@ -41,6 +43,17 @@ const ChildView = () => {
     };
 
     getLocation();
+
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://your-backend-api-url.com/data');
+        setData(response.data);
+      } catch (error) {
+        console.log('Error making API request:', error.message);
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
@@ -73,6 +86,3 @@ const styles = StyleSheet.create({
 });
 
 export default ChildView;
-    
-    
-
