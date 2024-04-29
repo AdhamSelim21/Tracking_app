@@ -31,7 +31,7 @@ const PushNotification = () => {
       const location = await Location.getCurrentPositionAsync({});
       const mapsLink = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
       await sendNotification(mapsLink);
-    }, 1000000); // 30 minutes in milliseconds
+    }, 10000); // 30 minutes in milliseconds
 
     return () => {
       clearInterval(intervalIdRef.current); 

@@ -10,7 +10,18 @@ const ChildView = () => {
   const [errMsg, setErrMsg] = useState("");
   const [userLat, setUserLat] = useState("");
   const [userLong, setUserLong] = useState("");
-  const [data, setData] = useState(null);
+
+  const sendLocation = async () => {
+    try {
+      const response = await axios.post('https://your-backend-api-url.com/location', {
+        latitude: userLat,
+        longitude: userLong,
+      });
+      console.log('Location saved successfully:', response.data);
+    } catch (error) {
+      console.log('Error saving location:', error.message);
+    }
+  };
 
   useEffect(() => {
     const getLocation = async () => {
@@ -32,6 +43,7 @@ const ChildView = () => {
           console.log("user longitude:", longitude);
           setUserLong(longitude.toString());
           setUserLat(latitude.toString());
+          sendLocation();
         }
       );
 
@@ -43,23 +55,12 @@ const ChildView = () => {
     };
 
     getLocation();
-
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('https://your-backend-api-url.com/data');
-        setData(response.data);
-      } catch (error) {
-        console.log('Error making API request:', error.message);
-      }
-    };
-
-    fetchData();
   }, []);
 
   useEffect(() => {
     const requestBackgroundLocation = async () => {
       const { status } = await Location.requestBackgroundPermissionsAsync();
-      if (status !== "granted") {
+     if (status !== "granted") {
         console.log("Background location permission denied");
       }
     };

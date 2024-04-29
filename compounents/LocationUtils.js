@@ -47,4 +47,4 @@ async function fetchCurrentLocation() {
   }
 })();
 
-export default storeLocationHistory; 
+export default storeLocationHistory(); 

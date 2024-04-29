@@ -21,6 +21,7 @@ const App = () => {
 
   const Stack = createNativeStackNavigator();
 
+
   return (
     
     <NavigationContainer>
@@ -29,7 +30,7 @@ const App = () => {
           {({ navigation }) => (
             <View style={styles.container}>
               <ButtonTrack onPress={handleToggleTracking} isTracking={isTracking} />
-              <PushNotification />
+              <PushNotification  />
               <ChildView/>
               <TrackMap/>
             

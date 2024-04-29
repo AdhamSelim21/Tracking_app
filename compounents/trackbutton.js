@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
@@ -8,23 +8,48 @@ const ButtonTrack = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [location, setLocation] = useState(null);
   const navigation = useNavigation(); // Get navigation reference
+  const [locationSubscription, setLocationSubscription] = useState(null);
+
+  const getLocationData = async () => {
+    try {
+      const response = await axios.get('https://your-backend-api.com/location');
+      const locationData = response.data;
+      return locationData;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
 
   const startTracking = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      if (status!== 'granted') {
         return; // Handle permission denial
       }
 
       setIsTracking(true); // Set tracking to true on button press
       console.log('Tracking started');
 
+      // Start watching the user's location
+      const subscription = await Location.watchPositionAsync({
+        accuracy: Location.Accuracy.Highest,
+        timeInterval: 1000, // Update location every 1 second
+      });
+      setLocationSubscription(subscription);
+
       // Get the user's location from the backend
-      const response = await axios.get('https://your-backend-api.com/location');
-      const locationData = response.data;
+      const locationData = await getLocationData();
 
       // Update the state of the map component with the location data
-      setLocation(locationData);
+      if (locationData) {
+        setLocation(locationData);
+      }
+
+      // Add a listener to update the location state with the latest location data
+      subscription.addListener((location) => {
+        setLocation(location.coords);
+      });
     } catch (error) {
       console.error(error);
     }
@@ -33,6 +58,12 @@ const ButtonTrack = () => {
   const stopTracking = () => {
     console.log('Tracking stopped');
     setIsTracking(false);
+
+    // Stop watching the user's location
+    if (locationSubscription) {
+      locationSubscription.remove();
+      setLocationSubscription(null);
+    }
   };
 
   const handleHistoryPress = () => {
