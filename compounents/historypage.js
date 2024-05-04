@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList } from 'react-native';
-import { storeLocationHistory } from './LocationUtils';
+import {storeLocationHistory} from './LocationUtils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 

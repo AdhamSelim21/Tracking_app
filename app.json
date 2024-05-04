@@ -17,7 +17,7 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyBLpsyN_qxvomD1BxYp5_7C7aWcvi9DjP0"
+        "googleMapsApiKey": "AIzaSyAkV9PXfuCK_MXOeJCH09MgqFfjZwWiXqU"
       }
     },
     "android": {
@@ -25,7 +25,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff",
         "config": {
-          "googleMapsApiKey": "AIzaSyBLpsyN_qxvomD1BxYp5_7C7aWcvi9DjP0"
+          "googleMapsApiKey": "AIzaSyAkV9PXfuCK_MXOeJCH09MgqFfjZwWiXqU"
         }
       },
       "package": "com.adham_mohamed.tracking"

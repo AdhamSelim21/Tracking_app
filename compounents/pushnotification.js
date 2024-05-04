@@ -3,39 +3,89 @@ import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import * as Location from "expo-location";
 import { Platform, View, Text, TouchableOpacity } from "react-native";
-//import * as Linking from "expo-linking";
+import { useNavigation } from '@react-navigation/native';
+
+// Add the requestNotificationPermission function from the first code
+const requestNotificationPermission = async () => {
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== "granted") {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+
+  if (finalStatus !== "granted") {
+    Alert.alert(
+      "Push Notifications",
+      "We need your permission to send you push notifications.",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("User cancelled the notification permission."),
+          style: "cancel"
+        },
+        { text: "Allow", onPress: () => console.log("User allowed the notification permission.") }
+      ],
+      { cancelable: false }
+    );
+  }
+};
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
+  handleNotification: async (notification) => ({
     shouldShowAlert: true,
     shouldPlaySound: true,
     shouldSetBadge: false,
+    data: notification.request.content.data, // Add this line to get the notification data
   }),
 });
 
 const PushNotification = () => {
   const [expoPushToken, setExpoPushToken] = useState("");
   const intervalIdRef = useRef(null); // Use useRef for the interval ID
+  const navigation = useNavigation();
 
+  const handleNotification = (notification) => {
+    console.log("Received notification: ", notification);
+    if (notification.request.content.data) {
+      const { data } = notification.request.content;
+      navigation.navigate('TRACKING', { data }); // Pass the notification data to the TRACKING screen
+    }
+  };
+
+  // Call the requestNotificationPermission function inside the useEffect hook
   useEffect(() => {
-    console.log("Registering for push notifications...");
-    registerForPushNotificationsAsync()
-      .then((token) => {
-        console.log("token: ", token);
-        setExpoPushToken(token);
-      })
-      .catch((err) => console.log(err));
+    requestNotificationPermission();
 
-    intervalIdRef.current = setInterval(async () => {
-      console.log("Sending notification every 30 minutes...");
-      const location = await Location.getCurrentPositionAsync({});
-      const mapsLink = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
-      await sendNotification(mapsLink);
-    }, 10000); // 30 minutes in milliseconds
+    (async () => {
+      const { status: permissionStatus } = await Notifications.requestPermissionsAsync();
+      if (permissionStatus !== 'granted') {
+        alert('Failed to get push token for push notification! Push notification permission is required.');
+        return;
+      }
 
-    return () => {
-      clearInterval(intervalIdRef.current); 
-    };
+      console.log("Registering for push notifications...");
+      registerForPushNotificationsAsync()
+        .then((token) => {
+          console.log("token: ", token);
+          setExpoPushToken(token);
+        })
+        .catch((err) => console.log(err));
+
+      intervalIdRef.current = setInterval(async () => {
+        console.log("Sending notification every 30 minutes...");
+        const location = await Location.getCurrentPositionAsync({});
+        const mapsLink = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
+        await sendNotification(mapsLink);
+      }, 2000000); // 30 minutes in milliseconds
+
+      Notifications.addNotificationReceivedListener(handleNotification); // Add this line to listen for notifications when the app is in the foreground
+
+      return () => {
+        clearInterval(intervalIdRef.current);
+        Notifications.removeNotificationSubscription(handleNotification); // Add this line to remove the listener when the component unmounts
+      };
+    })();
   }, []);
 
   async function registerForPushNotificationsAsync() {
@@ -97,19 +147,11 @@ const PushNotification = () => {
     });
   };
 
-  const handleNotificationPress = async (url) => {
-    console.log("Notification pressed with URL:", url);
-    const supported = await Linking.canOpenURL(url);
-    if (supported) {
-      await Linking.openURL(url);
-    } else {
-      console.log("Don't know how to open URL:", url);
-    }
-
-  };
+ 
 
   return (
     <View style={{ marginBottom:100, alignItems: "center" }}>
+
     </View>
   );; 
 };

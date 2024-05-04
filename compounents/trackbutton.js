@@ -31,12 +31,7 @@ const ButtonTrack = () => {
       setIsTracking(true); // Set tracking to true on button press
       console.log('Tracking started');
 
-      // Start watching the user's location
-      const subscription = await Location.watchPositionAsync({
-        accuracy: Location.Accuracy.Highest,
-        timeInterval: 1000, // Update location every 1 second
-      });
-      setLocationSubscription(subscription);
+ 
 
       // Get the user's location from the backend
       const locationData = await getLocationData();
@@ -46,10 +41,6 @@ const ButtonTrack = () => {
         setLocation(locationData);
       }
 
-      // Add a listener to update the location state with the latest location data
-      subscription.addListener((location) => {
-        setLocation(location.coords);
-      });
     } catch (error) {
       console.error(error);
     }
@@ -59,11 +50,7 @@ const ButtonTrack = () => {
     console.log('Tracking stopped');
     setIsTracking(false);
 
-    // Stop watching the user's location
-    if (locationSubscription) {
-      locationSubscription.remove();
-      setLocationSubscription(null);
-    }
+ 
   };
 
   const handleHistoryPress = () => {
@@ -134,9 +121,7 @@ const ButtonTrack = () => {
         onPress={handleHistoryPress}>
         <Text style={styles.buttonText}>History</Text>
       </TouchableOpacity>
-      {location && (
-        <YourMapComponent location={location} />
-      )}
+     
       <Text style={styles.liveTrackingText}>Live Tracking</Text>
     </View>
   );

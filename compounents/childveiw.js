@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import * as Location from "expo-location";
 
-const LOCATION_DISTANCE_THRESHOLD = 10; // METERS
+const LOCATION_DISTANCE_THRESHOLD = 10// METERS
 
 const ChildView = () => {
   const [errMsg, setErrMsg] = useState("");
@@ -70,7 +70,7 @@ const ChildView = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textstyle}>Hello </Text>
+      <Text style={styles.textstyle}> </Text>
       <StatusBar style="auto" />
     </View>
   );
