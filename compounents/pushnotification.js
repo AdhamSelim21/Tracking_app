@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import * as Location from "expo-location";
-import { Platform, View, Text, TouchableOpacity } from "react-native";
+import { Platform, View, Text, } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 
 // Add the requestNotificationPermission function from the first code
@@ -40,21 +40,46 @@ Notifications.setNotificationHandler({
   }),
 });
 
+const createNotificationChannel = async () => {
+  if (Platform.OS === "android") {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== "granted") {
+      const { status } = await Notifications.requestPermissionsAsync();
+      finalStatus = status;
+    }
+    if (finalStatus !== "granted") {
+      console.log("Failed to get notification permissions");
+      return;
+    }
+
+    await Notifications.setNotificationChannelAsync("default", {
+      name: "default",
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: "#FF231F7C",
+    });
+  }
+};
+
 const PushNotification = () => {
   const [expoPushToken, setExpoPushToken] = useState("");
   const intervalIdRef = useRef(null); // Use useRef for the interval ID
   const navigation = useNavigation();
 
   const handleNotification = (notification) => {
-    console.log("Received notification: ", notification);
-    if (notification.request.content.data) {
-      const { data } = notification.request.content;
-      navigation.navigate('TRACKING', { data }); // Pass the notification data to the TRACKING screen
+   
+      console.log("Received notification: ", notification);
+      if (notification.request.content.data) {
+        const { data } = notification.request.content;
+        navigation.navigate('TRACKING', { data }); // Pass the notification data to the TRACKING screen
+      }
     }
-  };
+  
 
   // Call the requestNotificationPermission function inside the useEffect hook
   useEffect(() => {
+    createNotificationChannel();
     requestNotificationPermission();
 
     (async () => {
@@ -77,7 +102,7 @@ const PushNotification = () => {
         const location = await Location.getCurrentPositionAsync({});
         const mapsLink = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
         await sendNotification(mapsLink);
-      }, 2000000); // 30 minutes in milliseconds
+      }, 20000000); // 30 minutes in milliseconds
 
       Notifications.addNotificationReceivedListener(handleNotification); // Add this line to listen for notifications when the app is in the foreground
 
@@ -92,12 +117,15 @@ const PushNotification = () => {
     let token;
 
     if (Platform.OS === "android") {
+      
       await Notifications.setNotificationChannelAsync("default", {
         name: "default",
         importance: Notifications.AndroidImportance.MAX,
         vibrationPattern: [0, 250, 250, 250],
         lightColor: "#FF231F7C",
-      });
+      
+    });
+  
     }
 
     if (Device.isDevice) {
@@ -151,6 +179,7 @@ const PushNotification = () => {
 
   return (
     <View style={{ marginBottom:100, alignItems: "center" }}>
+
 
     </View>
   );; 
