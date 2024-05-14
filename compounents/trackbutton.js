@@ -3,6 +3,7 @@ import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
+import TrackMap from './trackmap';
 
 const ButtonTrack = () => {
   const [isTracking, setIsTracking] = useState(false);
@@ -12,7 +13,7 @@ const ButtonTrack = () => {
 
   const getLocationData = async () => {
     try {
-      const response = await axios.get('https://your-backend-api.com/location');
+      const response = await axios.get("http://localhost:3000/last-location?fieldName=child_id&value=1");
       const locationData = response.data;
       return locationData;
     } catch (error) {
@@ -39,6 +40,7 @@ const ButtonTrack = () => {
       // Update the state of the map component with the location data
       if (locationData) {
         setLocation(locationData);
+        props.updateLocation(locationData);
       }
 
     } catch (error) {
@@ -116,6 +118,7 @@ const ButtonTrack = () => {
           {isTracking ? 'Tracking...' : 'Track'}
         </Text>
       </TouchableOpacity>
+      {location && <TrackMap location={location} />}
       <TouchableOpacity
         style={[styles.button, styles.buttonHistory]}
         onPress={handleHistoryPress}>

@@ -17,9 +17,17 @@ const styles = StyleSheet.create({
     marginBottom: 1150,
   },
 });
+const handleMarkerPress = (location) => {
+  // Do something when the marker is pressed
+  console.log(`Marker pressed at: ${location.latitude}, ${location.longitude}`);
+}
 
 const TrackMap = () => {
   const [location, setLocation] = useState(null);
+  
+  const updateLocation = (newLocation) => {
+    setLocation(newLocation);
+  };
 
   useEffect(() => {
     (async () => {
@@ -30,21 +38,26 @@ const TrackMap = () => {
 
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation.coords);
+            const address = await geocoder.getAddressForLocationAsync(currentLocation.coords);
+      console.log(address);
     })();
-  }, []);
+  }, );
+ 
+  
 
   return (
     <View style={styles.container}>
       {location && (
     
-        <MapView style={styles.map} provider="google">
+        <MapView style={styles.map} >
          
           <Marker
             coordinate={{
               latitude: location.latitude,
               longitude: location.longitude,
             }}
-            title="Your Location"
+            title="child location"
+            onPress={() => handleMarkerPress(location)}
           />
       
         </MapView>

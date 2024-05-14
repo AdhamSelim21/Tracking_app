@@ -4,7 +4,8 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import * as Location from "expo-location";
 
-const LOCATION_DISTANCE_THRESHOLD = 10// METERS
+const LOCATION_DISTANCE_THRESHOLD = 10; // METERS
+const API_URL = "http://localhost:3000/save-location";
 
 const ChildView = () => {
   const [errMsg, setErrMsg] = useState("");
@@ -13,7 +14,7 @@ const ChildView = () => {
 
   const sendLocation = async () => {
     try {
-      const response = await axios.post('https://your-backend-api-url.com/location', {
+      const response = await axios.post(API_URL, {
         latitude: userLat,
         longitude: userLong,
       });
@@ -55,7 +56,7 @@ const ChildView = () => {
     };
 
     getLocation();
-  }, []);
+  }, );
 
   useEffect(() => {
     const requestBackgroundLocation = async () => {
@@ -66,7 +67,7 @@ const ChildView = () => {
     };
 
     requestBackgroundLocation();
-  }, []);
+  }, );
 
   return (
     <View style={styles.container}>

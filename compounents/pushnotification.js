@@ -4,6 +4,7 @@ import * as Notifications from "expo-notifications";
 import * as Location from "expo-location";
 import { Platform, View, Text, } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
 // Add the requestNotificationPermission function from the first code
 const requestNotificationPermission = async () => {
@@ -83,6 +84,18 @@ const PushNotification = () => {
     requestNotificationPermission();
 
     (async () => {
+
+      const fetchData = async () => {
+        try {
+          const response = await axios.get("http://localhost:3000/last-location?fieldName=child_id&value=1");
+          console.log(response.data);
+        } catch (error) {
+          console.error("Error fetching data: ", error);
+        }
+      };
+
+      fetchData();
+
       const { status: permissionStatus } = await Notifications.requestPermissionsAsync();
       if (permissionStatus !== 'granted') {
         alert('Failed to get push token for push notification! Push notification permission is required.');
@@ -102,7 +115,7 @@ const PushNotification = () => {
         const location = await Location.getCurrentPositionAsync({});
         const mapsLink = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
         await sendNotification(mapsLink);
-      }, 20000000); // 30 minutes in milliseconds
+      }, 1800000); // 30 minutes in milliseconds
 
       Notifications.addNotificationReceivedListener(handleNotification); // Add this line to listen for notifications when the app is in the foreground
 
@@ -111,7 +124,7 @@ const PushNotification = () => {
         Notifications.removeNotificationSubscription(handleNotification); // Add this line to remove the listener when the component unmounts
       };
     })();
-  }, []);
+  }, );
 
   async function registerForPushNotificationsAsync() {
     let token;

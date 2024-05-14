@@ -29,7 +29,7 @@ const App = () => {
         <Stack.Screen name="TRACKING" >
           {({ navigation }) => (
             <View style={styles.container}>
-              <ButtonTrack onPress={handleToggleTracking} isTracking={isTracking} />
+              <ButtonTrack onPress={handleToggleTracking} isTracking={isTracking}  />
               <PushNotification  />
               <ChildView/>
               <TrackMap/>
