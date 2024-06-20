@@ -5,48 +5,54 @@ import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
 import TrackMap from './trackmap';
 
+
 const ButtonTrack = () => {
   const [isTracking, setIsTracking] = useState(false);
   const [location, setLocation] = useState(null);
   const navigation = useNavigation(); // Get navigation reference
   const [locationSubscription, setLocationSubscription] = useState(null);
 
-  const getLocationData = async () => {
+  const fetchUser = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/last-location?fieldName=child_id&value=1");
-      const locationData = response.data;
-      return locationData;
+      const url = `http://localhost:3000/location/`;
+      const response = await axios.get(url);
+      return response.data; // Return the JSON data from the response
     } catch (error) {
       console.error(error);
-      return null;
+      return null; // Return null or handle the error in some way
     }
   };
+  
 
   const startTracking = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status!== 'granted') {
+      if (status !== 'granted') {
         return; // Handle permission denial
       }
-
+  
       setIsTracking(true); // Set tracking to true on button press
       console.log('Tracking started');
-
- 
-
-      // Get the user's location from the backend
-      const locationData = await getLocationData();
-
-      // Update the state of the map component with the location data
-      if (locationData) {
-        setLocation(locationData);
-        props.updateLocation(locationData);
+  
+      const data = await fetchUser(); // Fetch user data
+      if (data === null) {
+        console.error('Failed to fetch user data');
+        return; // or handle the error in some other way
       }
-
+  
+      console.log(data); // Should log { "long": 4534543, "lat": 45645454 }
+  
+      // Update the state of the map component with the location data
+      const longitude = data.long;
+      const latitude = data.lat;
+  
+      // Use latitude and longitude as needed, e.g., update map markers
+      // or send to a backend server for further processing
     } catch (error) {
       console.error(error);
     }
   };
+  
 
   const stopTracking = () => {
     console.log('Tracking stopped');

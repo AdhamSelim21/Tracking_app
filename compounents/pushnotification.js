@@ -113,7 +113,7 @@ const PushNotification = () => {
       intervalIdRef.current = setInterval(async () => {
         console.log("Sending notification every 30 minutes...");
         const location = await Location.getCurrentPositionAsync({});
-        const mapsLink = `https://www.google.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
+        const mapsLink = `https://www.apple.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
         await sendNotification(mapsLink);
       }, 1800000); // 30 minutes in milliseconds
 
