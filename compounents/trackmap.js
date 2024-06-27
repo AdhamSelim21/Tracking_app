@@ -22,7 +22,7 @@ const handleMarkerPress = (location) => {
   console.log(`Marker pressed at: ${location.latitude}, ${location.longitude}`);
 }
 
-const TrackMap = () => {
+const TrackMap = ({ coordinate }) => {
   const [location, setLocation] = useState(null);
   
   const updateLocation = (newLocation) => {
@@ -47,22 +47,22 @@ const TrackMap = () => {
 
   return (
     <View style={styles.container}>
-      {location && (
+      {/* {coordinate && ( */}
     
         <MapView style={styles.map} >
          
           <Marker
             coordinate={{
-              latitude: location.latitude,
-              longitude: location.longitude,
+              latitude: coordinate.latitude,
+              longitude: coordinate.longitude,
             }}
             title="child location"
-            onPress={() => handleMarkerPress(location)}
+            onPress={() => handleMarkerPress(coordinate)}
           />
       
         </MapView>
           
-    )}
+    {/* )} */}
     
     </View>
   );

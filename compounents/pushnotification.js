@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
 import * as Location from "expo-location";
-import { Platform, View, Text, } from "react-native";
-import { useNavigation } from '@react-navigation/native';
+import { Platform, View } from "react-native";
 import axios from 'axios';
 
 // Add the requestNotificationPermission function from the first code
@@ -66,15 +65,10 @@ const createNotificationChannel = async () => {
 const PushNotification = () => {
   const [expoPushToken, setExpoPushToken] = useState("");
   const intervalIdRef = useRef(null); // Use useRef for the interval ID
-  const navigation = useNavigation();
 
   const handleNotification = (notification) => {
    
-      console.log("Received notification: ", notification);
-      if (notification.request.content.data) {
-        const { data } = notification.request.content;
-        navigation.navigate('TRACKING', { data }); // Pass the notification data to the TRACKING screen
-      }
+    console.log("Received notification: ", notification);
     }
   
 
@@ -85,16 +79,16 @@ const PushNotification = () => {
 
     (async () => {
 
-      const fetchData = async () => {
+      const fetchUser = async () => {
         try {
-          const response = await axios.get("http://localhost:3000/last-location?fieldName=child_id&value=1");
-          console.log(response.data);
+          const url = `http://172.20.10.9:3000/location/`;
+          const response = await axios.get(url);
+          return response.data; // Return the JSON data from the response
         } catch (error) {
-          console.error("Error fetching data: ", error);
+          console.error(error);
+          return null; // Return null or handle the error in some way
         }
       };
-
-      fetchData();
 
       const { status: permissionStatus } = await Notifications.requestPermissionsAsync();
       if (permissionStatus !== 'granted') {
@@ -115,7 +109,7 @@ const PushNotification = () => {
         const location = await Location.getCurrentPositionAsync({});
         const mapsLink = `https://www.apple.com/maps/search/?api=1&query=${location.coords.latitude},${location.coords.longitude}`;
         await sendNotification(mapsLink);
-      }, 1800000); // 30 minutes in milliseconds
+      }, 5000000); // 30 minutes in milliseconds
 
       Notifications.addNotificationReceivedListener(handleNotification); // Add this line to listen for notifications when the app is in the foreground
 

@@ -4,8 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from 'axios';
 import * as Location from "expo-location";
 
-const LOCATION_DISTANCE_THRESHOLD = 10; // METERS
-const API_URL = "http://localhost:3000/save-location";
+const API_URL = "http://172.20.10.9localhost:3000/save-location";
 
 const ChildView = () => {
   const [errMsg, setErrMsg] = useState("");
@@ -14,10 +13,11 @@ const ChildView = () => {
 
   const sendLocation = async () => {
     try {
+      const url = "http://172.20.10.9localhost:3000/save-location";
       const response = await axios.post(API_URL, {
         latitude: userLat,
         longitude: userLong,
-      });
+      })
       console.log('Location saved successfully:', response.data);
     } catch (error) {
       console.log('Error saving location:', error.message);
@@ -56,6 +56,9 @@ const ChildView = () => {
     };
 
     getLocation();
+
+       // Send location every 10 minutes
+       setInterval(sendLocation, 600000); // 600000 ms = 10 minutes
   }, );
 
   useEffect(() => {

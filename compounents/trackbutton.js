@@ -3,10 +3,10 @@ import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import * as Location from 'expo-location';
 import { useNavigation } from '@react-navigation/native';
 import axios from 'axios';
-import TrackMap from './trackmap';
 
 
-const ButtonTrack = () => {
+
+const ButtonTrack = ({ setCoordinateData }) => {
   const [isTracking, setIsTracking] = useState(false);
   const [location, setLocation] = useState(null);
   const navigation = useNavigation(); // Get navigation reference
@@ -14,7 +14,7 @@ const ButtonTrack = () => {
 
   const fetchUser = async () => {
     try {
-      const url = `http://localhost:3000/location/`;
+      const url = `http://172.20.10.9:3000/location/`;
       const response = await axios.get(url);
       return response.data; // Return the JSON data from the response
     } catch (error) {
@@ -43,8 +43,11 @@ const ButtonTrack = () => {
       console.log(data); // Should log { "long": 4534543, "lat": 45645454 }
   
       // Update the state of the map component with the location data
+
       const longitude = data.long;
       const latitude = data.lat;
+      setCoordinateData({longitude, latitude})      
+      
   
       // Use latitude and longitude as needed, e.g., update map markers
       // or send to a backend server for further processing
@@ -66,9 +69,9 @@ const ButtonTrack = () => {
   };
 
   const styles = StyleSheet.create({
-    buttonContainer: {
-      flexDirection: 'column', // Buttons stacked vertically
-      justifyContent: 'center', // Align buttons at the bottom
+   buttonContainer: {
+      flexDirection: 'column',
+      justifyContent: 'center',
       alignItems: 'center',
       left: 100,
       bottom: -110,
@@ -108,7 +111,7 @@ const ButtonTrack = () => {
       textAlign: 'right',
       marginRight: 20,
       flexDirection: 'row',
-      justifyContent: 'space-between',
+      justifyContent: 'pace-between',
       color: '#1e90ff',
       right: 160,
       bottom: 70,
@@ -118,19 +121,15 @@ const ButtonTrack = () => {
   return (
     <View style={styles.buttonContainer}>
       <TouchableOpacity
-        style={[styles.button, isTracking ? styles.buttonStop : styles.buttonStart]}
-        onPress={isTracking ? stopTracking : startTracking}>
-        <Text style={styles.buttonText}>
-          {isTracking ? 'Tracking...' : 'Track'}
-        </Text>
+        style={[styles.button, isTracking? styles.buttonStop : styles.buttonStart]}
+        onPress={isTracking? stopTracking : startTracking}
+      >
+        <Text style={styles.buttonText}>{isTracking? 'Tracking...' : 'Track'}</Text>
       </TouchableOpacity>
-      {location && <TrackMap location={location} />}
-      <TouchableOpacity
-        style={[styles.button, styles.buttonHistory]}
-        onPress={handleHistoryPress}>
+      {/* {location && <TrackMap location={location} />} */}
+      <TouchableOpacity style={[styles.button, styles.buttonHistory]} onPress={handleHistoryPress}>
         <Text style={styles.buttonText}>History</Text>
       </TouchableOpacity>
-     
       <Text style={styles.liveTrackingText}>Live Tracking</Text>
     </View>
   );

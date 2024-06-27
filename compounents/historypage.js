@@ -10,7 +10,7 @@ const storeCurrentLocation = async () => {
   if (location) {
     // Call the backend API to get the user's last location and date/time update
     try {
-      const response = await axios.get("http://localhost:3000/last-location?fieldName=child_id&value=1", {
+      const response = await axios.get(`http://172.20.10.9:3000/location/`, {
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${yourAccessToken}` // Add your access token here
